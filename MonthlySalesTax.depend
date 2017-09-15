@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1505346118 source:c:\users\mranderson\documents\cpp\monthlysalestax\main.cpp
+	<iostream>
+	<string>
+	<cctype>
+	<iomanip>
+	<cmath>
+
