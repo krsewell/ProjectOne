@@ -15,14 +15,18 @@ const double MOD_TOTALCOLLECT = 0.915331807780320366;   //Value removes tax from
 
 bool check_month(string);
 bool check_year(int);
-bool check_totalCollectedAmount(float);
+bool check_totalCollectedAmount(double);
 bool check_again(char &);
-string standard_month(string);
-double round_num(double);
 
-void get_input_var_again();
+void input_var_again();
 void input_cin_reset();
 void output_report(string,int,double);
+
+string input_month(bool);
+int input_year(bool);
+double input_totalCollectedAmount(bool);
+string standard_month(string);
+double round_num(double);
 
 /*
     Feature list:   *ask the user for the   month (string)
@@ -45,23 +49,43 @@ void output_report(string,int,double);
     @version 0.0.3
 
 */
-int main()
-{
+int main(){
 do {
-    string  month = "";
-    int     year = -1;
-    double  totalCollectedAmount = -1;
-    bool    month_inputInvalid,
-            year_inputInvalid,
-            totalCollectedAmount_inputInvalid;
-
-    //Assume that user provides invalid data
-
-    month_inputInvalid = year_inputInvalid = totalCollectedAmount_inputInvalid = true;
-
+    string  month;
+    int     year;
+    double  totalCollectedAmount;
 
     //User Input
     bool firstRun = true;
+    month = input_month(firstRun);
+    year = input_year(firstRun);
+    totalCollectedAmount = input_totalCollectedAmount(firstRun);
+
+
+
+    //Calculate values and generate report
+
+    output_report(month,year,totalCollectedAmount);
+
+
+    //Repeat?
+    input_var_again();
+
+} while (check_again(again));
+
+
+
+//Exit without errors
+return(0);
+
+}
+
+
+
+string input_month(bool firstRun){
+    bool month_inputInvalid = true;
+    string month;
+
     while (month_inputInvalid){
         if (!check_month(month)){
             if (!firstRun){
@@ -79,9 +103,15 @@ do {
         }
         firstRun = false;
     }
+    return month;
+}
 
-    firstRun = true;
-    while (year_inputInvalid){
+
+int input_year(bool firstRun){
+   bool year_inputInvalid = true;
+   int year;
+
+   while (year_inputInvalid){
         if (!check_year(year)){
             if (!firstRun){
                 cout << "\nOpps... you entered an invalid year.\n";
@@ -95,8 +125,14 @@ do {
         }
         firstRun = false;
     }
+    return year;
+}
 
-    firstRun = true;
+
+double input_totalCollectedAmount(bool firstRun){
+    bool totalCollectedAmount_inputInvalid = true;
+    double totalCollectedAmount = -1;
+
     while (totalCollectedAmount_inputInvalid){
         if (!check_totalCollectedAmount(totalCollectedAmount)){
             if (!firstRun){
@@ -113,26 +149,8 @@ do {
         }
         firstRun = false;
     }
-
-    //Calculate values and generate report
-
-    output_report(month,year,totalCollectedAmount);
-
-
-    //Repeat?
-    get_input_var_again();
-
-} while (check_again(again)); // 'N' is not evaluated. any value other then 'Y' will end the program.
-
-
-
-//Exit without errors
-return(0);
-
+    return totalCollectedAmount;
 }
-
-
-
 
 
 void output_report(string month,int year,double totalCollectedAmount){
@@ -180,7 +198,7 @@ void output_report(string month,int year,double totalCollectedAmount){
 }
 
 
-void get_input_var_again(){
+void input_var_again(){
     cout << "Would you like to do another calculation??" << endl;
     cout << "('Y' or 'N')" << endl;
     cin >> again;
@@ -211,7 +229,7 @@ bool check_again(char & again){
 
     while (again != 'Y' && again != 'N'){
         cout << "Sorry..." << endl << endl;
-        get_input_var_again();
+        input_var_again();
         again = toupper(again);
     }
 
@@ -257,7 +275,7 @@ bool check_year(int pyear){
 }
 
 
-bool check_totalCollectedAmount(float ptotalCollectedAmount){
+bool check_totalCollectedAmount(double ptotalCollectedAmount){
     input_cin_reset();
     if (ptotalCollectedAmount > 0){
 
