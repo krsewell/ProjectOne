@@ -42,13 +42,13 @@ int digit_of_num(int);
                     *collected == amount of sales plus county tax plus state tax
 */
 /**
-    This program calculates the sales tax due to the state/county at the end of each month
-    by inputing the total amount in dollars collected. Report will be print with the month and year input
-    by the user.
-
-    @author Kristopher J Sewell
-    @version 0.0.3
-
+*    \brief This program calculates the sales tax due to the state/county at the end of each month
+*    by inputing the total amount in dollars collected. Report will be print with the month and year input
+*    by the user.
+*
+*    \author Kristopher J Sewell
+*    \version 0.0.3
+*
 */
 int main(){
 do {
@@ -84,7 +84,12 @@ return(0);
 
 
 
-
+/**
+*    \brief Gets from the user the month to include on the report.
+*
+*    \param boolean flag denoting first run
+*    \return string containing the month
+*/
 string input_month(bool firstRun){
     bool month_inputInvalid = true;
     string month;
@@ -109,7 +114,12 @@ string input_month(bool firstRun){
     return month;
 }
 
-
+/**
+*    \brief Gets from the user the year to include on the report.
+*
+*    \param boolean flag denoting first run
+*    \return integer value representing the year
+*/
 int input_year(bool firstRun){
    bool year_inputInvalid = true;
    int year = -1;
@@ -131,7 +141,12 @@ int input_year(bool firstRun){
     return year;
 }
 
-
+/**
+*    \brief Gets from the user total collected revenue to be evaluated.
+*
+*    \param boolean flag denoting first run
+*    \return double floating point number
+*/
 double input_totalCollectedAmount(bool firstRun){
     bool totalCollectedAmount_inputInvalid = true;
     double totalCollectedAmount = -1;
@@ -155,7 +170,14 @@ double input_totalCollectedAmount(bool firstRun){
     return totalCollectedAmount;
 }
 
-
+/**
+*    \brief Determines the county/state taxes due based on argument values.
+*    Additionally Formats and prints to console the information in a report.
+*
+*    \param string month
+*    \param int year
+*    \param double double floating point value in dollars
+*/
 void output_report(string month,int year,double totalCollectedAmount){
     double  totalSalesAmount,
             salesTaxState,
@@ -171,15 +193,7 @@ void output_report(string month,int year,double totalCollectedAmount){
     salesTaxState = round_num(salesTaxState);
 
     int digits;
-
-    for (int i = 100000000,j=0; i > 10; i=i/10,j++){
-        if(totalCollectedAmount < i){
-            digits = 11 - j;
-        }
-    }
-    if (totalCollectedAmount > 10000000000){
-        digits = 11;
-    }
+    digits = digit_of_num(totalCollectedAmount) + 3;
 
     //how long is the report header
     int length = month.length() + digit_of_num(year) + 1;
@@ -192,15 +206,20 @@ void output_report(string month,int year,double totalCollectedAmount){
 
     cout    << "Total Amount Collected:  " << setw(digits) << fixed << setprecision(2) << totalCollectedAmount << endl
             << "Total Amount Sold:       " << setw(digits) << fixed << setprecision(2) << totalSalesAmount << endl
-            << "Tax due to County:       " << setw(digits) << fixed << setprecision(2) << salesTaxCounty << "    " << TAX_COUNTY_RATE*100 << '%' <<endl
-            << "Tax due to State:        " << setw(digits) << fixed << setprecision(2) << salesTaxState << "    " << TAX_STATE_RATE*100 << '%' <<endl << endl;
+            << "Tax due to County:       " << setw(digits) << fixed << setprecision(2) << salesTaxCounty << "    "
+                        << TAX_COUNTY_RATE*100 << '%' <<endl
+            << "Tax due to State:        " << setw(digits) << fixed << setprecision(2) << salesTaxState << "    "
+                        << TAX_STATE_RATE*100 << '%' <<endl << endl;
 
 
 
 
 }
 
-
+/**
+*    \brief Checks to see if the user would like to run the program again.
+*
+*/
 void input_var_again(){
     cout << "Would you like to do another calculation??" << endl;
     cout << "('Y' or 'N')" << endl;
@@ -208,7 +227,10 @@ void input_var_again(){
     input_cin_reset();
 }
 
-
+/**
+*    \brief Clears the cin object of an error and flushes the buffer.
+*
+*/
 void input_cin_reset(){
     if (cin.fail()){
         cin.clear();
@@ -216,7 +238,13 @@ void input_cin_reset(){
     }
 }
 
-
+/**
+*    \brief Formats the month string into a standardized format with the first character capitalized
+*    and the remaining characters in lowercase.
+*
+*    \param string string value of a month
+*    \return corrected string
+*/
 string standard_month(string pstring){
     for (unsigned int i = 0; i < pstring.length();i++){
         pstring[i] = tolower(pstring[i]);
@@ -225,7 +253,12 @@ string standard_month(string pstring){
     return pstring;
 }
 
-
+/**
+*    \brief Evaluates if the variable "again" is within normal values.
+*
+*    \param char character reference
+*    \return true or false
+*/
 bool check_again(char & again){
 
     again = toupper(again);
@@ -248,7 +281,12 @@ bool check_again(char & again){
                   //Provided to terminate program just in case.
 }
 
-
+/**
+*    \brief Evaluates if the variable "month" is within normal values.
+*
+*    \param string string containing month
+*    \return true or false
+*/
 bool check_month(string pstring){
     input_cin_reset();
     const int MONTHS_ARRAY_SIZE = 13;
@@ -265,7 +303,12 @@ bool check_month(string pstring){
     return false;
 }
 
-
+/**
+*    \brief Evaluates if the variable "year" is within normal values.
+*
+*    \param integer integer between 1 - 2500
+*    \return true or false
+*/
 bool check_year(int pyear){
     input_cin_reset();
     if (pyear > 0 && pyear < 2501){
@@ -277,7 +320,12 @@ bool check_year(int pyear){
     }
 }
 
-
+/**
+*    \brief Evaluates if the variable "totalCollectedAmount" is within normal values.
+*
+*    \param double double floating point value
+*    \return true or false
+*/
 bool check_totalCollectedAmount(double ptotalCollectedAmount){
     input_cin_reset();
     if (ptotalCollectedAmount > 0){
@@ -289,7 +337,13 @@ bool check_totalCollectedAmount(double ptotalCollectedAmount){
     }
 }
 
-
+/**
+*    \brief  This function takes a double floating point number and rounds the value to the nearest two
+*            decimal places.
+*
+*    \param double double floating point value
+*    \return double floating point rounded to the nearest two decimal places
+*/
 double round_num(double num){
     double fraction = num - floor(num);
 
@@ -307,10 +361,15 @@ double round_num(double num){
     }
 }
 
-
+/**
+*    \brief Function takes an integer and determines how many decimal places the integer has.
+*
+*    \param num integer value being evaluated
+*    \return integer value representing number of digits
+*/
 int digit_of_num(int num){
     int j = 0;
-    for (int i = num; num > 0;num /= 10){
+    for (; num > 0;num /= 10){
         j++;
     }
     return j;
