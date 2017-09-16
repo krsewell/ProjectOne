@@ -16,8 +16,13 @@ const double MOD_TOTALCOLLECT = 0.915331807780320366;   //Value removes tax from
 bool check_month(string);
 bool check_year(int);
 bool check_totalCollectedAmount(float);
+bool check_again(char &);
 string standard_month(string);
 double round_num(double);
+
+void get_input_var_again();
+void input_cin_reset();
+void output_report(string,int,double);
 
 /*
     Feature list:   *ask the user for the   month (string)
@@ -49,6 +54,7 @@ do {
     bool    month_inputInvalid,
             year_inputInvalid,
             totalCollectedAmount_inputInvalid;
+
     //Assume that user provides invalid data
 
     month_inputInvalid = year_inputInvalid = totalCollectedAmount_inputInvalid = true;
@@ -65,7 +71,7 @@ do {
             cout << "\nPlease enter the month you would like on the report: " <<
                     "\n*Note* Only full names are accepted (i.e January)";
             cin >> month;
-            cin.ignore(5,'\n');
+            input_cin_reset();
             month = standard_month(month);
         }
         if (check_month(month)){
@@ -82,7 +88,7 @@ do {
             }
             cout << "\nPlease enter the year you would like on the report: ";
             cin >> year;
-            cin.ignore(5,'\n');
+            input_cin_reset();
         }
         if (check_year(year)){
             year_inputInvalid = false;
@@ -99,7 +105,7 @@ do {
 
             cout << "\nPlease enter the amount you collected this month: ";
             cin >> totalCollectedAmount;
-            cin.ignore(5,'\n');
+            input_cin_reset();
         }
 
         if (check_totalCollectedAmount(totalCollectedAmount)){
@@ -108,7 +114,28 @@ do {
         firstRun = false;
     }
 
-    //Calculate values
+    //Calculate values and generate report
+
+    output_report(month,year,totalCollectedAmount);
+
+
+    //Repeat?
+    get_input_var_again();
+
+} while (check_again(again)); // 'N' is not evaluated. any value other then 'Y' will end the program.
+
+
+
+//Exit without errors
+return(0);
+
+}
+
+
+
+
+
+void output_report(string month,int year,double totalCollectedAmount){
     double  totalSalesAmount,
             salesTaxState,
             salesTaxCounty;
@@ -122,39 +149,50 @@ do {
     salesTaxCounty = round_num(salesTaxCounty);
     salesTaxState = round_num(salesTaxState);
 
-    //validate calculated data
+    int digits;
 
-    if (totalCollectedAmount == totalSalesAmount + salesTaxCounty + salesTaxState){
-        cout << "good";
-    } else {
-        cout    << "There was an error with the calculation" << endl
-                << "totalCollectedAmount: " << setprecision(9) << totalCollectedAmount << endl
-                << "totalSalesAmount: " << setprecision(9) << totalSalesAmount << endl
-                << "salesTaxCounty: " << setprecision(9) << salesTaxCounty << endl
-                << "salesTaxState: " << setprecision(9) << salesTaxState << endl;
+    for (int i = 100000000,j=0; i > 10; i=i/10,j++){
+        if(totalCollectedAmount < i){
+            digits = 11 - j;
+        }
+    }
+    if (totalCollectedAmount > 10000000000){
+        digits = 11;
     }
 
+    //how long is the report header
+    int length = month.length() + to_string(year).length() + 1;
 
-
-    //generate report
-    //format "%.2lf %.2lf"
-
-    cout << '|' << month << year << '|' << endl;
-    //cout << month.length() + year.length() + 3;
-    int length = 0;
-    for (int i = 0; i < length;i++){
-        cout << '-';
+    cout    << endl << endl << month << " " << year << endl;
+    for (int i = length; i >0; i--){
+        cout << "-";
     }
+    cout << endl;
+
+    cout    << "Total Amount Collected:  " << setw(digits) << fixed << setprecision(2) << totalCollectedAmount << endl
+            << "Total Amount Sold:       " << setw(digits) << fixed << setprecision(2) << totalSalesAmount << endl
+            << "Tax due to County:       " << setw(digits) << fixed << setprecision(2) << salesTaxCounty << "    " << TAX_COUNTY_RATE*100 << '%' <<endl
+            << "Tax due to State:        " << setw(digits) << fixed << setprecision(2) << salesTaxState << "    " << TAX_STATE_RATE*100 << '%' <<endl << endl;
 
 
-    //Repeat?
+
+
+}
+
+
+void get_input_var_again(){
     cout << "Would you like to do another calculation??" << endl;
     cout << "('Y' or 'N')" << endl;
     cin >> again;
-    cin.ignore(5,'\n');
-} while (again == 'Y'); // 'N' is not evaluated. any value other then 'Y' will end the program.
+    input_cin_reset();
+}
 
-return 0;
+
+void input_cin_reset(){
+    if (cin.fail()){
+        cin.clear();
+        cin.ignore(5,'\n');
+    }
 }
 
 
@@ -166,7 +204,32 @@ string standard_month(string pstring){
     return pstring;
 }
 
+
+bool check_again(char & again){
+
+    again = toupper(again);
+
+    while (again != 'Y' && again != 'N'){
+        cout << "Sorry..." << endl << endl;
+        get_input_var_again();
+        again = toupper(again);
+    }
+
+
+    if (again == 'Y'){
+        return true;
+
+    } else if (again == 'N'){
+        return false;
+    }
+
+    return false; //should never reach here.
+                  //Provided to terminate program just in case.
+}
+
+
 bool check_month(string pstring){
+    input_cin_reset();
     const int MONTHS_ARRAY_SIZE = 13;
     string monthsArray[MONTHS_ARRAY_SIZE] = {"","January","February",
         "March","April","May","June","July","August",
@@ -181,8 +244,11 @@ bool check_month(string pstring){
     return false;
 }
 
+
 bool check_year(int pyear){
+    input_cin_reset();
     if (pyear > 0 && pyear < 2501){
+
         return true;
     }
     else {
@@ -190,19 +256,23 @@ bool check_year(int pyear){
     }
 }
 
+
 bool check_totalCollectedAmount(float ptotalCollectedAmount){
+    input_cin_reset();
     if (ptotalCollectedAmount > 0){
+
         return true;
     }
     else {
         return false;
     }
 }
+
 
 double round_num(double num){
     double fraction = num - floor(num);
 
-    if (fraction > 0.49999){
+    if (fraction > 0.4999999){
         num *= 100;
         num = ceil(num);
         num *= 0.01;
