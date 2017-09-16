@@ -27,6 +27,7 @@ int input_year(bool);
 double input_totalCollectedAmount(bool);
 string standard_month(string);
 double round_num(double);
+int digit_of_num(int);
 
 /*
     Feature list:   *ask the user for the   month (string)
@@ -82,6 +83,8 @@ return(0);
 
 
 
+
+
 string input_month(bool firstRun){
     bool month_inputInvalid = true;
     string month;
@@ -109,7 +112,7 @@ string input_month(bool firstRun){
 
 int input_year(bool firstRun){
    bool year_inputInvalid = true;
-   int year;
+   int year = -1;
 
    while (year_inputInvalid){
         if (!check_year(year)){
@@ -179,7 +182,7 @@ void output_report(string month,int year,double totalCollectedAmount){
     }
 
     //how long is the report header
-    int length = month.length() + to_string(year).length() + 1;
+    int length = month.length() + digit_of_num(year) + 1;
 
     cout    << endl << endl << month << " " << year << endl;
     for (int i = length; i >0; i--){
@@ -302,4 +305,13 @@ double round_num(double num){
         num *= 0.01;
         return num;
     }
+}
+
+
+int digit_of_num(int num){
+    int j = 0;
+    for (int i = num; num > 0;num /= 10){
+        j++;
+    }
+    return j;
 }
